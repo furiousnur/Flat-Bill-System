@@ -13,7 +13,13 @@ return new class extends Migration
     {
         Schema::create('flats', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('house_owner_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('building_id')->nullable()->constrained()->nullOnDelete();
+            $table->string('flat_number');
+            $table->string('flat_owner_name')->nullable();
+            $table->string('flat_owner_contact')->nullable();
             $table->timestamps();
+            $table->unique(['house_owner_id', 'flat_number']);
         });
     }
 

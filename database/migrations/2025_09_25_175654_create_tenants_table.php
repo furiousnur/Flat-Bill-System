@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('tenants', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->string('contact')->nullable();
+            $table->foreignId('house_owner_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('building_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('flat_id')->nullable()->constrained()->nullOnDelete();
             $table->timestamps();
         });
     }

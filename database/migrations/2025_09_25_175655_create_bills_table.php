@@ -13,6 +13,14 @@ return new class extends Migration
     {
         Schema::create('bills', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('house_owner_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('flat_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('bill_category_id')->constrained()->cascadeOnDelete();
+            $table->string('month'); // e.g. "2025-09"
+            $table->decimal('amount', 10, 2);
+            $table->decimal('due_amount', 10, 2)->default(0);
+            $table->enum('status', ['unpaid', 'paid'])->default('unpaid');
+            $table->text('notes')->nullable();
             $table->timestamps();
         });
     }
