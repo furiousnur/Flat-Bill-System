@@ -4,6 +4,7 @@ namespace App\Repositories\Owner\Payment;
 
 use App\Models\BillPayment;
 use Exception;
+use Illuminate\Support\Facades\DB;
 
 class PaymentRepository implements PaymentRepositoryInterface
 {
@@ -41,23 +42,26 @@ class PaymentRepository implements PaymentRepositoryInterface
     public function create(array $data)
     {
         try {
-            $payment = BillPayment::create([
-                'bill_id'        => $data['bill_id'],
-                'amount'         => $data['amount'],
-                'payment_method' => $data['payment_method'],
-                'paid_at'        => $data['paid_at'] ?? now(),
-            ]);
-
-            $bill = $payment->bill;
-            if ($payment->amount >= $bill->due_amount) {
-                $bill->status = 'paid';
-                $bill->due_amount = 0;
-            } else {
+            return DB::transaction(function () use ($data) {
+                $payment = BillPayment::create([
+                    'bill_id'        => $data['bill_id'],
+                    'amount'         => $data['amount'],
+                    'payment_method' => $data['payment_method'],
+                    'paid_at'        => $data['paid_at'] ?? now(),
+                ]);
+                $bill = $payment->bill;
                 $bill->due_amount -= $payment->amount;
-            }
-            $bill->save();
 
-            return $payment;
+                if ($bill->due_amount <= 0) {
+                    $bill->status = 'paid';
+                    $bill->due_amount = 0;
+                } else {
+                    $bill->status = 'unpaid';
+                }
+
+                $bill->save();
+                return $payment;
+            });
         } catch (Exception $e) {
             throw new Exception("Failed to create payment: " . $e->getMessage());
         }
@@ -69,30 +73,33 @@ class PaymentRepository implements PaymentRepositoryInterface
     public function update($payment, array $data)
     {
         try {
-            if (!($payment instanceof BillPayment)) {
-                $payment = BillPayment::findOrFail($payment);
-            }
+            return DB::transaction(function () use ($payment, $data) {
+                if (!($payment instanceof BillPayment)) {
+                    $payment = BillPayment::findOrFail($payment);
+                }
+                $payment->update([
+                    'bill_id'        => $data['bill_id'],
+                    'amount'         => $data['amount'],
+                    'payment_method' => $data['payment_method'],
+                    'paid_at'        => $data['paid_at'] ?? $payment->paid_at,
+                ]);
 
-            $payment->update([
-                'bill_id'        => $data['bill_id'],
-                'amount'         => $data['amount'],
-                'payment_method' => $data['payment_method'],
-                'paid_at'        => $data['paid_at'] ?? $payment->paid_at,
-            ]);
+                $bill = $payment->bill;
+                $totalPaid = $bill->payments()->sum('amount');
 
-            $bill = $payment->bill;
-            $totalPaid = $bill->payments()->sum('amount');
-            if ($totalPaid >= $bill->amount) {
-                $bill->status = 'paid';
-                $bill->due_amount = 0;
-            } else {
-                $bill->status = 'unpaid';
-                $bill->due_amount = $bill->amount - $totalPaid;
-            }
-            $bill->save();
+                if ($totalPaid >= $bill->amount) {
+                    $bill->status = 'paid';
+                    $bill->due_amount = 0;
+                } else {
+                    $bill->status = 'unpaid';
+                    $bill->due_amount = $bill->amount - $totalPaid;
+                }
 
-            return $payment;
+                $bill->save();
+                return $payment;
+            });
         } catch (Exception $e) {
+            dd($e);
             throw new Exception("Failed to update payment: " . $e->getMessage());
         }
     }
@@ -111,9 +118,7 @@ class PaymentRepository implements PaymentRepositoryInterface
             $bill->due_amount += $payment->amount;
             $bill->status = 'unpaid';
             $bill->save();
-
             $payment->delete();
-
             return true;
         } catch (Exception $e) {
             throw new Exception("Failed to delete payment: " . $e->getMessage());

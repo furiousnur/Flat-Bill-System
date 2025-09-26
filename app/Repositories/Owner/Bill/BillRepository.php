@@ -47,6 +47,7 @@ class BillRepository implements BillRepositoryInterface
                 'bill_category_id'  => $data['bill_category_id'],
                 'month'             => $data['month'],
                 'amount'            => $data['amount'],
+                'due_amount'            => $data['amount'],
                 'notes'              => $data['notes'] ?? null,
             ]);
         } catch (Exception $e) {

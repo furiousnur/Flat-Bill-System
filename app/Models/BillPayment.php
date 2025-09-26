@@ -17,6 +17,10 @@ class BillPayment extends Model
         'paid_at',
     ];
 
+    protected $casts = [
+        'paid_at' => 'datetime',
+    ];
+
     public function bill()
     {
         return $this->belongsTo(Bill::class);

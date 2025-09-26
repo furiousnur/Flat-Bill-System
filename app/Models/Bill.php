@@ -18,6 +18,7 @@ class Bill extends Model
         'bill_category_id',
         'month',
         'amount',
+        'due_amount',
         'notes',
         'status',
     ];
@@ -35,5 +36,10 @@ class Bill extends Model
     public function billCategory()
     {
         return $this->belongsTo(BillCategory::class);
+    }
+
+    public function payments()
+    {
+        return $this->hasMany(BillPayment::class, 'bill_id');
     }
 }

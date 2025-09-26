@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Owner;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Owner\StoreBillPaymentRequest;
 use App\Http\Requests\Owner\UpdateBillPaymentRequest;
+use App\Models\BillPayment;
 use App\Repositories\Owner\Bill\BillRepositoryInterface;
 use App\Repositories\Owner\Payment\PaymentRepositoryInterface;
 
@@ -15,7 +16,7 @@ class BillPaymentController extends Controller
 
     public function __construct(
         PaymentRepositoryInterface $repository,
-        BillRepositoryInterface $billRepository
+        BillRepositoryInterface $billRepository,
     ) {
         $this->repository = $repository;
         $this->billRepository = $billRepository;
@@ -35,7 +36,7 @@ class BillPaymentController extends Controller
      */
     public function create()
     {
-        $bills = $this->billRepository->getAllWithoutPaginate(); // Only unpaid bills maybe
+        $bills = $this->billRepository->getAllWithoutPaginate();
         return view('owner.payments.create', compact('bills'));
     }
 
@@ -44,12 +45,12 @@ class BillPaymentController extends Controller
      */
     public function store(StoreBillPaymentRequest $request)
     {
-        $data = $request->validated();
+        $request->validated();
         try {
             $this->repository->create($request->all());
 
             return redirect()
-                ->route('owner.bill-payments.index')
+                ->route('owner.payments.index')
                 ->with('success', 'Payment has been recorded successfully.');
         } catch (\Exception $e) {
             return back()
@@ -71,14 +72,14 @@ class BillPaymentController extends Controller
     /**
      * Update the specified payment in storage.
      */
-    public function update(UpdateBillPaymentRequest $request, $paymentId)
+    public function update(UpdateBillPaymentRequest $request, BillPayment $payment)
     {
-        $data = $request->validated();
+        $request->validated();
         try {
-            $this->repository->update($paymentId, $request->all());
+            $this->repository->update($payment, $request->all());
 
             return redirect()
-                ->route('owner.bill-payments.index')
+                ->route('owner.payments.index')
                 ->with('success', 'Payment has been updated successfully.');
         } catch (\Exception $e) {
             return back()
@@ -96,7 +97,7 @@ class BillPaymentController extends Controller
             $this->repository->delete($paymentId);
 
             return redirect()
-                ->route('owner.bill-payments.index')
+                ->route('owner.payments.index')
                 ->with('success', 'Payment has been deleted successfully.');
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());

@@ -45,6 +45,7 @@
                                 <th class="px-4 py-2 border">Bill Category</th>
                                 <th class="px-4 py-2 border">Month</th>
                                 <th class="px-4 py-2 border">Amount</th>
+                                <th class="px-4 py-2 border">Due Amount</th>
                                 <th class="px-4 py-2 border">Created At</th>
                                 <th class="px-4 py-2 border">Actions</th>
                             </tr>
@@ -61,6 +62,7 @@
                                     <td class="px-4 py-2 border">{{ $bill->billCategory->name ?? '-' }}</td>
                                     <td class="px-4 py-2 border">{{ $bill->month }}</td>
                                     <td class="px-4 py-2 border">{{ number_format($bill->amount, 2) }}</td>
+                                    <td class="px-4 py-2 border">{{ number_format($bill->due_amount, 2) }}</td>
                                     <td class="px-4 py-2 border">{{ $bill->created_at->format('d M, Y') }}</td>
                                     <td class="px-4 py-2 border">
                                         <x-primary-button class="bg-blue-600 hover:bg-blue-700">
