@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Admin;
+namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -22,17 +22,20 @@ class UpdateHouseOwnerRequest extends FormRequest
      */
     public function rules(): array
     {
-        $houseOwnerId = $this->route('house_owner')->id ?? null;
+        $houseOwner = $this->route('house_owner');
+        $houseOwnerId = $houseOwner?->id ?? null;
+        $userId = $houseOwner?->user_id ?? null;
 
         return [
             'name' => ['required', 'string', 'max:255'],
+            'contact' => ['required', 'string', 'max:15', 'regex:/^[0-9+\- ]+$/'],
             'email' => [
                 'required',
                 'email',
                 Rule::unique('house_owners', 'email')->ignore($houseOwnerId),
-                Rule::unique('users', 'email')->ignore($houseOwnerId),
+                Rule::unique('users', 'email')->ignore($userId),
             ],
-            'password' => ['nullable', 'string', 'min:8', 'confirmed'],
+            'password' => ['nullable', 'string', 'min:8'],
         ];
     }
 }

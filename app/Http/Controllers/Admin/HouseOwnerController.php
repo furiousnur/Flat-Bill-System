@@ -3,18 +3,19 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\UpdateHouseOwnerRequest;
+use App\Http\Requests\UpdateHouseOwnerRequest;
 use App\Http\Requests\StoreHouseOwnerRequest;
-use App\Services\Admin\HouseOwnerServiceInterface;
+use App\Models\HouseOwner;
+use App\Repositories\Admin\HouseOwnerRepositoryInterface;
 use Illuminate\Http\Request;
 
 class HouseOwnerController extends Controller
 {
-    protected $service;
+    protected $repository;
 
-    public function __construct(HouseOwnerServiceInterface $service)
+    public function __construct(HouseOwnerRepositoryInterface $repository)
     {
-        $this->service = $service;
+        $this->repository = $repository;
     }
 
     /**
@@ -22,7 +23,8 @@ class HouseOwnerController extends Controller
      */
     public function index()
     {
-        return view('admin.house-owner.list');
+        $owners = $this->repository->getAll(15);
+        return view('admin.house-owner.list', compact('owners'));
     }
 
     /**
@@ -30,7 +32,7 @@ class HouseOwnerController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.house-owner.create');
     }
 
     /**
@@ -38,13 +40,25 @@ class HouseOwnerController extends Controller
      */
     public function store(StoreHouseOwnerRequest $request)
     {
-        //
+        $data = $request->validated();
+
+        try {
+            $this->repository->create($data);
+
+            return redirect()
+                ->route('admin.house-owners.index')
+                ->with('success', 'House Owner profile has been created successfully.');
+        } catch (\Exception $e) {
+            return back()
+                ->withInput()
+                ->with('error', $e->getMessage());
+        }
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($id)
     {
         //
     }
@@ -52,24 +66,29 @@ class HouseOwnerController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(HouseOwner $owner)
     {
-        //
+        return view('admin.house-owner.edit', compact('owner'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateHouseOwnerRequest $request, string $id)
+    public function update(UpdateHouseOwnerRequest $request, HouseOwner $houseOwner)
     {
-        //
+        $this->repository->update($houseOwner, $request->validated());
+
+        return redirect()->route('admin.house-owners.index')
+            ->with('success', 'House Owner profile has been updated!');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(HouseOwner $houseOwner)
     {
-        //
+        $this->repository->delete($houseOwner);
+        return redirect()->route('admin.house-owners.index')
+            ->with('success', 'House Owner profile has been deleted!');
     }
 }

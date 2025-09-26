@@ -24,13 +24,14 @@ class StoreHouseOwnerRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
+            'contact' => ['required', 'string', 'max:15', 'regex:/^[0-9+\- ]+$/'],
             'email' => [
                 'required',
                 'email',
                 Rule::unique('house_owners', 'email'),
                 Rule::unique('users', 'email'),
             ],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'password' => ['required', 'string', 'min:8'],
         ];
     }
 }
