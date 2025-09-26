@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Repositories\Owner\Flat;
+namespace App\Repositories\Owner\Bill;
 
-interface FlatRepositoryInterface
+interface BillRepositoryInterface
 {
     public function getAllWithoutPaginate();
     public function getAll(int $perPage = 10);
     public function findById(int $id);
     public function create(array $data);
-    public function update($flat, array $data);
-    public function delete($flat);
+    public function update($building, array $data);
+    public function delete($building);
 }

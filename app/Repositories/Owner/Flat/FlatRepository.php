@@ -7,6 +7,11 @@ use Exception;
 
 class FlatRepository implements FlatRepositoryInterface
 {
+    public function getAllWithoutPaginate()
+    {
+        return Flat::orderBy('created_at', 'desc')->get();
+    }
+
     public function getAll(int $perPage = 10)
     {
         return Flat::orderBy('created_at', 'desc')->paginate($perPage);

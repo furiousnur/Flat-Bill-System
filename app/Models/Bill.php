@@ -18,6 +18,7 @@ class Bill extends Model
         'bill_category_id',
         'month',
         'amount',
+        'notes',
     ];
 
     public function houseOwner()

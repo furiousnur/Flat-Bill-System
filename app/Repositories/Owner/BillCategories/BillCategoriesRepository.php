@@ -7,6 +7,11 @@ use Exception;
 
 class BillCategoriesRepository implements BillCategoriesRepositoryInterface
 {
+    public function getAllWithoutPaginate()
+    {
+        return BillCategory::orderBy('created_at', 'desc')->get();
+    }
+
     public function getAll(int $perPage = 10)
     {
         return BillCategory::orderBy('created_at', 'desc')->paginate($perPage);

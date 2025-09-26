@@ -10,6 +10,11 @@ use Exception;
 
 class HouseOwnerRepository implements HouseOwnerRepositoryInterface
 {
+    public function getAllWithoutPaginate()
+    {
+        return HouseOwner::orderBy('created_at', 'desc')->get();
+    }
+
     public function getAll(int $perPage = 10)
     {
         return HouseOwner::orderBy('created_at', 'desc')->paginate($perPage);

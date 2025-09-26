@@ -8,6 +8,8 @@ use App\Repositories\Admin\HouseOwnerRepositoryInterface;
 use App\Repositories\Admin\HouseOwnerRepository;
 use App\Repositories\Admin\Tenant\TenantRepository;
 use App\Repositories\Admin\Tenant\TenantRepositoryInterface;
+use App\Repositories\Owner\Bill\BillRepository;
+use App\Repositories\Owner\Bill\BillRepositoryInterface;
 use App\Repositories\Owner\BillCategories\BillCategoriesRepository;
 use App\Repositories\Owner\BillCategories\BillCategoriesRepositoryInterface;
 use App\Repositories\Owner\Building\BuildingRepository;
@@ -28,6 +30,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(BuildingRepositoryInterface::class, BuildingRepository::class);
         $this->app->bind(FlatRepositoryInterface::class, FlatRepository::class);
         $this->app->bind(BillCategoriesRepositoryInterface::class, BillCategoriesRepository::class);
+        $this->app->bind(BillRepositoryInterface::class, BillRepository::class);
     }
 
     public function boot()
