@@ -7,7 +7,6 @@ use App\Http\Requests\Owner\StoreBuildingRequest;
 use App\Http\Requests\Owner\UpdateBuildingRequest;
 use App\Models\Building;
 use App\Repositories\Owner\Building\BuildingRepositoryInterface;
-use Illuminate\Support\Facades\Auth;
 
 class BuildingController extends Controller
 {
