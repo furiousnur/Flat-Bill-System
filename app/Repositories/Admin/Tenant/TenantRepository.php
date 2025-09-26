@@ -2,10 +2,9 @@
 
 namespace App\Repositories\Admin\Tenant;
 
+use App\Models\Building;
 use App\Models\HouseOwner;
-use App\Models\User;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
+use App\Models\Tenant;
 use Exception;
 
 class TenantRepository implements TenantRepositoryInterface
@@ -23,45 +22,38 @@ class TenantRepository implements TenantRepositoryInterface
     public function create(array $data)
     {
         try {
-            return DB::transaction(function () use ($data) {
-                $user = User::create([
-                    'name' => $data['name'],
-                    'email' => $data['email'],
-                    'contact' => $data['contact'],
-                    'password' => Hash::make($data['password']),
-                ]);
+            $building = Building::find($data['building_id']);
+            $data['house_owner_id'] = $building->house_owner_id ?? null;
 
-                $user->assignRole('house-owner');
-
-                $data['user_id'] = $user->id;
-
-                return HouseOwner::create($data);
-            });
-        } catch (Exception $e) {
-            throw new Exception("Failed to create House Owner: " . $e->getMessage());
+            return Tenant::create([
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'contact' => $data['contact'],
+                'building_id' => $data['building_id'],
+                'flat_id' => $data['flat_id'],
+                'house_owner_id' => $data['house_owner_id'],
+            ]);
+        } catch (\Exception $e) {
+            throw new \Exception("Failed to create Tenant: " . $e->getMessage());
         }
     }
 
-    public function update($houseOwner, array $data)
+
+    public function update($tenant, array $data)
     {
         try {
-            return DB::transaction(function () use ($houseOwner, $data) {
-                $user = $houseOwner->user;
-                $user->update([
-                    'name' => $data['name'],
-                    'email' => $data['email'],
-                    'contact' => $data['contact'],
-                    'password' => !empty($data['password']) ? Hash::make($data['password']) : $user->password,
-                ]);
-
-                return $houseOwner->update([
-                    'name' => $data['name'],
-                    'email' => $data['email'],
-                    'contact' => $data['contact'],
-                ]);
-            });
+            $building = Building::find($data['building_id']);
+            $data['house_owner_id'] = $building->house_owner_id ?? null;
+            return $tenant->update([
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'contact' => $data['contact'],
+                'building_id' => $data['building_id'],
+                'flat_id' => $data['flat_id'],
+                'house_owner_id' => $data['house_owner_id'],
+            ]);
         } catch (\Exception $e) {
-            throw new \Exception("Failed to update House Owner: " . $e->getMessage());
+            throw new \Exception("Failed to update Tenant: " . $e->getMessage());
         }
     }
 
