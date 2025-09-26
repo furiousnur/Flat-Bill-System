@@ -31,6 +31,10 @@
 
                     @role('house-owner')
                         <!-- Owner Menu -->
+                        <x-nav-link :href="route('owner.buildings.index')" :active="request()->routeIs('owner.buildings.*')">
+                            {{ __('Buildings') }}
+                        </x-nav-link>
+
                         <x-nav-link :href="route('owner.flats.index')" :active="request()->routeIs('owner.flats.*')">
                             {{ __('Flats') }}
                         </x-nav-link>

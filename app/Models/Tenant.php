@@ -16,6 +16,9 @@ class Tenant extends Model
         'name',
         'email',
         'contact',
+        'house_owner_id',
+        'building_id',
+        'flat_id',
     ];
 
     public function houseOwner()
