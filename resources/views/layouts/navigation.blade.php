@@ -5,16 +5,44 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
+                    <a href="{{ route('dashboard') }}" class="text-xl font-bold text-gray-800">
+                        Flat Bill System
                     </a>
                 </div>
 
+
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <!-- Dashboard -->
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+
+                    @role('super-admin')
+                        <!-- Admin Menu -->
+                        <x-nav-link :href="route('admin.house-owners.index')" :active="request()->routeIs('admin.house-owners.*')">
+                            {{ __('House Owners') }}
+                        </x-nav-link>
+
+                        <x-nav-link :href="route('admin.tenants.index')" :active="request()->routeIs('admin.tenants.*')">
+                            {{ __('Tenants') }}
+                        </x-nav-link>
+                    @endrole
+
+                    @role('house-owner')
+                        <!-- Owner Menu -->
+                        <x-nav-link :href="route('owner.flats.index')" :active="request()->routeIs('owner.flats.*')">
+                            {{ __('Flats') }}
+                        </x-nav-link>
+
+                        <x-nav-link :href="route('owner.bill-categories.index')" :active="request()->routeIs('owner.bill-categories.*')">
+                            {{ __('Bill Categories') }}
+                        </x-nav-link>
+
+                        <x-nav-link :href="route('owner.bills.index')" :active="request()->routeIs('owner.bills.*')">
+                            {{ __('Bills') }}
+                        </x-nav-link>
+                    @endrole
                 </div>
             </div>
 
