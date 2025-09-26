@@ -9,17 +9,17 @@ class FlatRepository implements FlatRepositoryInterface
 {
     public function getAllWithoutPaginate()
     {
-        return Flat::orderBy('created_at', 'desc')->get();
+        return Flat::forOwner()->orderBy('created_at', 'desc')->get();
     }
 
     public function getAll(int $perPage = 10)
     {
-        return Flat::orderBy('created_at', 'desc')->paginate($perPage);
+        return Flat::forOwner()->orderBy('created_at', 'desc')->paginate($perPage);
     }
 
     public function findById(int $id)
     {
-        return Flat::with('user')->find($id);
+        return Flat::with('user')->forOwner()->find($id);
     }
 
     public function create(array $data)

@@ -11,17 +11,17 @@ class BillRepository implements BillRepositoryInterface
 {
     public function getAllWithoutPaginate()
     {
-        return Bill::orderBy('created_at', 'desc')->get();
+        return Bill::forOwner()->orderBy('created_at', 'desc')->get();
     }
 
     public function getAll(int $perPage = 10)
     {
-        return Bill::orderBy('created_at', 'desc')->paginate($perPage);
+        return Bill::forOwner()->orderBy('created_at', 'desc')->paginate($perPage);
     }
 
     public function findById(int $id)
     {
-        return Bill::with(['flat', 'billCategory', 'houseOwner'])->find($id);
+        return Bill::with(['flat', 'billCategory', 'houseOwner'])->forOwner()->find($id);
     }
 
     public function create(array $data)
@@ -46,7 +46,7 @@ class BillRepository implements BillRepositoryInterface
     {
         try {
             if (!($bill instanceof Bill)) {
-                $bill = Bill::findOrFail($bill);
+                $bill = Bill::forOwner()->findOrFail($bill);
             }
 
             return $bill->update([
@@ -66,7 +66,7 @@ class BillRepository implements BillRepositoryInterface
     {
         try {
             if (!($bill instanceof Bill)) {
-                $bill = Bill::findOrFail($bill);
+                $bill = Bill::forOwner()->findOrFail($bill);
             }
 
             $bill->delete();

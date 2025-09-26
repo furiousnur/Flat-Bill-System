@@ -9,17 +9,17 @@ class BillCategoriesRepository implements BillCategoriesRepositoryInterface
 {
     public function getAllWithoutPaginate()
     {
-        return BillCategory::orderBy('created_at', 'desc')->get();
+        return BillCategory::forOwner()->orderBy('created_at', 'desc')->get();
     }
 
     public function getAll(int $perPage = 10)
     {
-        return BillCategory::orderBy('created_at', 'desc')->paginate($perPage);
+        return BillCategory::forOwner()->orderBy('created_at', 'desc')->paginate($perPage);
     }
 
     public function findById(int $id)
     {
-        return BillCategory::with('user')->find($id);
+        return BillCategory::with('user')->forOwner()->find($id);
     }
 
     public function create(array $data)

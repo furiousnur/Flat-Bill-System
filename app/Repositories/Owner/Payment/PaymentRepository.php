@@ -16,6 +16,7 @@ class PaymentRepository implements PaymentRepositoryInterface
     public function getAllWithoutPaginate()
     {
         return BillPayment::with(['bill.flat.building.houseOwner', 'bill.billCategory'])
+            ->forOwner()
             ->orderBy('created_at', 'desc')
             ->get();
     }
@@ -26,6 +27,7 @@ class PaymentRepository implements PaymentRepositoryInterface
     public function getAll(int $perPage = 10)
     {
         return BillPayment::with(['bill.flat.building.houseOwner', 'bill.billCategory'])
+            ->forOwner()
             ->orderBy('created_at', 'desc')
             ->paginate($perPage);
     }
@@ -35,7 +37,7 @@ class PaymentRepository implements PaymentRepositoryInterface
      */
     public function findById(int $id)
     {
-        return BillPayment::with(['bill.flat.building.houseOwner', 'bill.billCategory'])->find($id);
+        return BillPayment::with(['bill.flat.building.houseOwner', 'bill.billCategory'])->forOwner()->find($id);
     }
 
     /**
@@ -46,6 +48,7 @@ class PaymentRepository implements PaymentRepositoryInterface
         try {
             return DB::transaction(function () use ($data) {
                 $payment = BillPayment::create([
+                    'house_owner_id' => auth()->user()->houseOwner->id,
                     'bill_id'        => $data['bill_id'],
                     'amount'         => $data['amount'],
                     'payment_method' => $data['payment_method'],
@@ -81,7 +84,7 @@ class PaymentRepository implements PaymentRepositoryInterface
         try {
             return DB::transaction(function () use ($payment, $data) {
                 if (!($payment instanceof BillPayment)) {
-                    $payment = BillPayment::findOrFail($payment);
+                    $payment = BillPayment::forOwner()->findOrFail($payment);
                 }
                 $payment->update([
                     'bill_id'        => $data['bill_id'],
@@ -117,7 +120,7 @@ class PaymentRepository implements PaymentRepositoryInterface
     {
         try {
             if (!($payment instanceof BillPayment)) {
-                $payment = BillPayment::findOrFail($payment);
+                $payment = BillPayment::forOwner()->findOrFail($payment);
             }
 
             $bill = $payment->bill;

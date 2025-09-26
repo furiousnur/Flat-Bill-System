@@ -50,9 +50,9 @@
                                     <td class="px-4 py-2 border">
                                         {{ $loop->iteration + ($tenants->currentPage() - 1) * $tenants->perPage() }}
                                     </td>
-                                    <td class="px-4 py-2 border">{{ $tenant->name }}</td>
-                                    <td class="px-4 py-2 border">{{ $tenant->email }}</td>
-                                    <td class="px-4 py-2 border">{{ $tenant->contact }}</td>
+                                    <td class="px-4 py-2 border">{{ $tenant->name ?? '-'}}</td>
+                                    <td class="px-4 py-2 border">{{ $tenant->email ?? '-'}}</td>
+                                    <td class="px-4 py-2 border">{{ $tenant->contact ?? '-'}}</td>
                                     <td class="px-4 py-2 border">{{ $tenant->building->houseOwner->name ?? '-' }}</td>
                                     <td class="px-4 py-2 border">{{ $tenant->building->name ?? '-' }}</td>
                                     <td class="px-4 py-2 border">{{ $tenant->flat->flat_number ?? '-' }}</td>

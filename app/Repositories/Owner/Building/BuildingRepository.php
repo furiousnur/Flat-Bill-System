@@ -9,17 +9,17 @@ class BuildingRepository implements BuildingRepositoryInterface
 {
     public function getAllWithoutPaginate()
     {
-        return Building::orderBy('created_at', 'desc')->get();
+        return Building::forOwner()->orderBy('created_at', 'desc')->get();
     }
 
     public function getAll(int $perPage = 10)
     {
-        return Building::orderBy('created_at', 'desc')->paginate($perPage);
+        return Building::forOwner()->orderBy('created_at', 'desc')->paginate($perPage);
     }
 
     public function findById(int $id)
     {
-        return Building::with('user')->find($id);
+        return Building::with('user')->forOwner()->find($id);
     }
 
     public function create(array $data)

@@ -21,6 +21,11 @@ class Tenant extends Model
         'flat_id',
     ];
 
+    public function scopeForOwner($query, $ownerId = null)
+    {
+        return $query->where('house_owner_id', $ownerId ?? auth()->user()->houseOwner->id);
+    }
+
     public function houseOwner()
     {
         return $this->belongsTo(HouseOwner::class);
