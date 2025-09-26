@@ -2,9 +2,11 @@
 
 namespace App\Repositories\Owner\Payment;
 
+use App\Mail\BillNotificationMail;
 use App\Models\BillPayment;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class PaymentRepository implements PaymentRepositoryInterface
 {
@@ -60,9 +62,13 @@ class PaymentRepository implements PaymentRepositoryInterface
                 }
 
                 $bill->save();
+                if ($bill->flat && $bill->flat->houseOwner && $bill->flat->houseOwner->email) {
+                    Mail::to($bill->flat->houseOwner->email)->queue(new BillNotificationMail($bill, 'paid', $payment));
+                }
                 return $payment;
             });
         } catch (Exception $e) {
+            dd($e);
             throw new Exception("Failed to create payment: " . $e->getMessage());
         }
     }

@@ -2,8 +2,10 @@
 
 namespace App\Repositories\Owner\Bill;
 
+use App\Mail\BillNotificationMail;
 use App\Models\Bill;
 use Exception;
+use Illuminate\Support\Facades\Mail;
 
 class BillRepository implements BillRepositoryInterface
 {
@@ -28,7 +30,12 @@ class BillRepository implements BillRepositoryInterface
             if (isset($data['amount'])) {
                 $data['due_amount'] = $data['amount'];
             }
-            return Bill::create($data);
+            $bill = Bill::create($data);
+            if ($bill->flat && $bill->flat->houseOwner && $bill->flat->houseOwner->email) {
+                Mail::to($bill->flat->houseOwner->email)->send(new BillNotificationMail($bill, 'created'));
+            }
+
+            return $bill;
         } catch (\Exception $e) {
             throw new \Exception("Failed to create Bill: " . $e->getMessage());
         }

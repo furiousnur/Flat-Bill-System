@@ -3,7 +3,6 @@
 namespace App\Repositories\Admin\Tenant;
 
 use App\Models\Building;
-use App\Models\HouseOwner;
 use App\Models\Tenant;
 use Exception;
 
@@ -11,12 +10,12 @@ class TenantRepository implements TenantRepositoryInterface
 {
     public function getAll(int $perPage = 10)
     {
-        return HouseOwner::orderBy('created_at', 'desc')->paginate($perPage);
+        return Tenant::orderBy('created_at', 'desc')->paginate($perPage);
     }
 
     public function findById(int $id)
     {
-        return HouseOwner::with('user')->find($id);
+        return Tenant::with('user')->find($id);
     }
 
     public function create(array $data)
