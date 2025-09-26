@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\TenantController;
 use App\Http\Controllers\Owner\FlatController;
 use App\Http\Controllers\Owner\BillCategoryController;
 use App\Http\Controllers\Owner\BillController;
+use App\Http\Controllers\Owner\BillPaymentController;
 use App\Http\Controllers\Owner\BuildingController;
 
 /*
@@ -44,6 +45,7 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('bill-categories', BillCategoryController::class)->names('owner.bill-categories');
         Route::resource('bills', BillController::class)->names('owner.bills');
         Route::resource('buildings', BuildingController::class)->names('owner.buildings');
+        Route::resource('payments', BillPaymentController::class)->names('owner.payments');
     });
 });
 

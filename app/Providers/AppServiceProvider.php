@@ -16,6 +16,8 @@ use App\Repositories\Owner\Building\BuildingRepository;
 use App\Repositories\Owner\Building\BuildingRepositoryInterface;
 use App\Repositories\Owner\Flat\FlatRepository;
 use App\Repositories\Owner\Flat\FlatRepositoryInterface;
+use App\Repositories\Owner\Payment\PaymentRepository;
+use App\Repositories\Owner\Payment\PaymentRepositoryInterface;
 use Illuminate\Support\Facades\Route;
 use Spatie\Permission\Middleware\PermissionMiddleware;
 use Spatie\Permission\Middleware\RoleMiddleware;
@@ -31,6 +33,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(FlatRepositoryInterface::class, FlatRepository::class);
         $this->app->bind(BillCategoriesRepositoryInterface::class, BillCategoriesRepository::class);
         $this->app->bind(BillRepositoryInterface::class, BillRepository::class);
+        $this->app->bind(PaymentRepositoryInterface::class, PaymentRepository::class);
     }
 
     public function boot()

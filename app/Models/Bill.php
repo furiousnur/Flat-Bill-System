@@ -19,6 +19,7 @@ class Bill extends Model
         'month',
         'amount',
         'notes',
+        'status',
     ];
 
     public function houseOwner()

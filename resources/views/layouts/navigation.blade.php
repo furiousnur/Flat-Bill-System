@@ -46,6 +46,10 @@
                         <x-nav-link :href="route('owner.bills.index')" :active="request()->routeIs('owner.bills.*')">
                             {{ __('Bills') }}
                         </x-nav-link>
+
+                        <x-nav-link :href="route('owner.payments.index')" :active="request()->routeIs('owner.payments.*')">
+                            {{ __('Payments') }}
+                        </x-nav-link>
                     @endrole
                 </div>
             </div>

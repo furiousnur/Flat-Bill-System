@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreTenantRequest;
 use App\Http\Requests\Admin\UpdateTenantRequest;
 use App\Models\Tenant;
-use App\Repositories\Admin\HouseOwnerRepositoryInterface;
 use App\Repositories\Admin\Tenant\TenantRepositoryInterface;
 use App\Repositories\Owner\Building\BuildingRepositoryInterface;
 use App\Repositories\Owner\Flat\FlatRepositoryInterface;
@@ -33,7 +32,7 @@ class TenantController extends Controller
      */
     public function index()
     {
-        $tenants = Tenant::with(['houseOwner', 'building', 'flat'])->paginate(15);
+        $tenants = $this->repository->getAll(15);
         return view('admin.tenants.list', compact('tenants'));
     }
 
