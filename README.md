@@ -32,8 +32,8 @@ A multi-tenant system to manage buildings, flats, and bills. The system supports
 1. **Clone the repository**
 
 ```bash
-1. git clone https://github.com/yourusername/flat-bill-system.git
-2. cd flat-bill-system
+1. git clone https://github.com/furiousnur/Flat-Bill-System.git
+2. cd Flat-Bill-System
 3. composer install
 4. npm install
 5. npm run dev
